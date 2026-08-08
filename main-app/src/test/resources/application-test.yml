@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:talenthub_test;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  flyway:
+    enabled: false
+
+  cache:
+    type: simple
+
+stats-svc:
+  url: http://localhost:8081
+
+jwt:
+  secret: test-secret-key-at-least-256-bits-long-for-test-purposes-only!!
+  expiration-ms: 3600000
