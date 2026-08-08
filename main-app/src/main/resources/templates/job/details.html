@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head(${job.title})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <div class="page-header">
+        <div class="label" th:text="${job.category}">CATEGORY</div>
+        <h1 th:text="${job.title}">Title</h1>
+        <p style="color:var(--ink-soft);">
+            <span th:text="#{job.detail.postedBy}">Posted by</span>
+            <a th:href="@{/profile/{id}(id=${job.client.id})}" th:text="${job.client.fullName}">Client</a>
+        </p>
+    </div>
+    <div class="detail-layout">
+        <div class="card">
+            <h3 th:text="#{job.detail.description}">Description</h3>
+            <p th:text="${job.description}">Description</p>
+
+            <div th:unless="${#maps.isEmpty(budgetInCurrencies)}" style="margin-top:20px;">
+                <h3 th:text="#{job.detail.budgetInCurrencies}">Budget in other currencies</h3>
+                <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:8px;">
+                    <span th:each="entry : ${budgetInCurrencies}"
+                          style="font-family:monospace; font-size:16px; color:var(--accent);"
+                          th:text="${entry.key + ': ' + entry.value}">USD: $500</span>
+                </div>
+            </div>
+
+            <div th:unless="${#lists.isEmpty(applications)}" style="margin-top:28px;">
+                <h3 th:text="#{job.detail.applications} + ' (' + ${#lists.size(applications)} + ')'">Applications</h3>
+                <div class="record-list" style="margin-top:12px;">
+                    <div class="record" th:each="app : ${applications}">
+                        <div class="record-main">
+                            <span class="record-title" th:text="${app.freelancer.fullName}">Name</span>
+                            <span class="record-sub">$<span th:text="${app.proposedRate}">0</span>/hr</span>
+                        </div>
+                        <div class="record-actions">
+                            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status)}" th:text="${app.status}">STATUS</span>
+                            <div sec:authorize="hasRole('CLIENT')" th:if="${app.status.name() == 'PENDING'}">
+                                <form th:action="@{/applications/{id}/accept(id=${app.id})}" method="post" class="inline-form">
+                                    <button type="submit" class="btn btn-primary btn-small">Accept</button>
+                                </form>
+                                <form th:action="@{/applications/{id}/reject(id=${app.id})}" method="post" class="inline-form">
+                                    <button type="submit" class="btn btn-danger btn-small">Reject</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card" style="margin-bottom:16px;">
+                <div style="font-size:28px; font-weight:800; color:var(--accent); margin-bottom:4px;">$<span th:text="${job.budget}">0</span></div>
+                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(job.status)}" th:text="${job.status}">STATUS</span>
+                <div sec:authorize="hasRole('FREELANCER')" th:if="${job.status.name() == 'OPEN'}" style="margin-top:16px;">
+                    <a class="btn btn-primary" style="width:100%; text-align:center;"
+                       th:href="@{/applications/apply/{id}(id=${job.id})}"
+                       th:text="#{job.detail.apply}">Apply Now</a>
+                </div>
+            </div>
+            <div class="card" sec:authorize="hasRole('CLIENT')">
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <a class="btn btn-secondary" th:href="@{/jobs/{id}/edit(id=${job.id})}" th:text="#{job.detail.edit}">Edit</a>
+                    <form th:if="${job.status.name() == 'OPEN'}" th:action="@{/jobs/{id}/close(id=${job.id})}" method="post">
+                        <button type="submit" class="btn btn-secondary" style="width:100%;" th:text="#{job.detail.close}">Close</button>
+                    </form>
+                    <form th:if="${job.status.name() == 'OPEN'}" th:action="@{/jobs/{id}/fill(id=${job.id})}" method="post">
+                        <button type="submit" class="btn btn-primary" style="width:100%;" th:text="#{job.detail.fill}">Mark Filled</button>
+                    </form>
+                    <form th:action="@{/jobs/{id}/delete(id=${job.id})}" method="post">
+                        <button type="submit" class="btn btn-danger" style="width:100%;" th:text="#{job.detail.delete}">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

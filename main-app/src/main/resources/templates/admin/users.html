@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Manage Users')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <div class="page-header">
+        <div class="label" th:text="#{admin.label}">Admin</div>
+        <h1 th:text="#{admin.title}">Manage Users</h1>
+    </div>
+    <div class="record-list">
+        <div class="record" th:each="user : ${users}">
+            <div class="record-main">
+                <span class="record-title" th:text="${user.fullName}">Name</span>
+                <span class="record-sub">@<span th:text="${user.username}">username</span> &#183; <span th:text="${user.email}">email</span></span>
+                <span class="record-sub" th:if="${!user.permissions.isEmpty()}">
+                    Permissions:
+                    <span th:each="p, stat : ${user.permissions}"
+                          th:text="${p.name + (stat.last ? '' : ', ')}"
+                          style="font-weight:600; color:var(--accent-dark);"></span>
+                </span>
+            </div>
+            <div class="record-actions" style="flex-wrap:wrap; gap:8px;">
+                <span class="badge" th:text="${user.role}">ROLE</span>
+                <form th:action="@{/admin/users/{id}/role(id=${user.id})}" method="post" class="inline-form">
+                    <select name="role" style="padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}" th:selected="${r == user.role}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-small" th:text="#{admin.changeRole}">Change Role</button>
+                </form>
+                <form th:action="@{/admin/users/{userId}/permissions/grant(userId=${user.id})}" method="post" class="inline-form">
+                    <select name="permissionId" style="padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <option th:each="p : ${allPermissions}" th:value="${p.id}" th:text="${p.name}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-outline btn-small" th:text="#{admin.grant}">Grant</button>
+                </form>
+                <form th:if="${!user.permissions.isEmpty()}"
+                      th:action="@{/admin/users/{userId}/permissions/revoke(userId=${user.id})}" method="post" class="inline-form">
+                    <select name="permissionId" style="padding:6px 10px; border-radius:var(--radius); border:1px solid var(--border);">
+                        <option th:each="p : ${user.permissions}" th:value="${p.id}" th:text="${p.name}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-danger btn-small" th:text="#{admin.revoke}">Revoke</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

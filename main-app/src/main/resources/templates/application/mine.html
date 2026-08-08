@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Applications')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <div class="page-header">
+        <div class="label">Freelancer dashboard</div>
+        <h1 th:text="#{nav.myApplications}">My Applications</h1>
+    </div>
+    <div th:if="${#lists.isEmpty(applications)}" class="empty-state">
+        No applications yet. <a th:href="@{/jobs}">Browse open jobs</a>.
+    </div>
+    <div class="record-list" th:unless="${#lists.isEmpty(applications)}">
+        <div class="record" th:each="app : ${applications}">
+            <div class="record-main">
+                <span class="record-title" th:text="${app.jobPost.title}">Job Title</span>
+                <span class="record-sub">
+                    $<span th:text="${app.proposedRate}">0</span> proposed &#183;
+                    Applied <span th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}">date</span>
+                </span>
+            </div>
+            <div class="record-actions">
+                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(app.status)}"
+                      th:text="${app.status}">STATUS</span>
+                <a class="btn btn-outline btn-small" th:href="@{/jobs/{id}(id=${app.jobPost.id})}">View Job</a>
+                <form th:if="${app.status.name() == 'PENDING'}"
+                      th:action="@{/applications/{id}/withdraw(id=${app.id})}"
+                      method="post" class="inline-form">
+                    <button type="submit" class="btn btn-danger btn-small">Withdraw</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

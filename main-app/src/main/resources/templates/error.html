@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page-narrow" style="text-align:center; padding-top:80px;">
+    <span class="error-stamp" th:text="${statusCode}">ERR</span>
+    <h1>Something went wrong</h1>
+    <p style="color:var(--ink-soft);" th:text="${errorMessage}">An unexpected error occurred.</p>
+    <a class="btn btn-primary" th:href="@{/}">Back to home</a>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

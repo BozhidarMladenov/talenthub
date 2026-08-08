@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(pageTitle)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${pageTitle} + ' | TalentHub'">TalentHub</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<header class="site-header" th:fragment="nav">
+    <a class="brand" th:href="@{/}">TalentHub</a>
+    <nav class="nav-links">
+        <a th:href="@{/jobs}" th:text="#{nav.browse}">Browse Jobs</a>
+        <th:block sec:authorize="hasRole('CLIENT')">
+            <a th:href="@{/jobs/mine}" th:text="#{nav.myPosts}">My Posts</a>
+            <a th:href="@{/jobs/create}" th:text="#{nav.postJob}">Post a Job</a>
+        </th:block>
+        <th:block sec:authorize="hasRole('FREELANCER')">
+            <a th:href="@{/applications/mine}" th:text="#{nav.myApplications}">My Applications</a>
+        </th:block>
+        <th:block sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/admin/users}" th:text="#{nav.manageUsers}">Manage Users</a>
+        </th:block>
+        <th:block sec:authorize="isAuthenticated()">
+            <a th:href="@{/profile}" sec:authentication="name" class="nav-user"></a>
+            <form th:action="@{/auth/logout}" method="post" class="inline-form">
+                <button type="submit" class="btn btn-small btn-secondary" th:text="#{nav.logout}">Logout</button>
+            </form>
+        </th:block>
+        <th:block sec:authorize="!isAuthenticated()">
+            <a th:href="@{/auth/login}" th:text="#{nav.login}">Log in</a>
+            <a th:href="@{/auth/register}" class="nav-cta" th:text="#{nav.signup}">Sign up</a>
+        </th:block>
+        <span class="lang-switcher">
+            <a th:href="@{''(lang='en')}">EN</a> |
+            <a th:href="@{''(lang='bg')}">BG</a>
+        </span>
+    </nav>
+</header>
+<footer class="site-footer" th:fragment="footer">
+    <p th:text="#{footer.text}">&#169; 2026 TalentHub</p>
+</footer>
+</body>
+</html>

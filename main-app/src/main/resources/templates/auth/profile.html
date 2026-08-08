@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Profile')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <div class="page-header">
+        <div class="label" th:text="${user.role}">ROLE</div>
+        <h1 th:text="${user.fullName}">Full Name</h1>
+        <p style="color:var(--ink-soft);" th:text="'@' + ${user.username}">@username</p>
+    </div>
+    <div class="detail-layout">
+        <div class="card">
+            <h3>About</h3>
+            <p th:text="${user.bio} ?: 'No bio provided.'" style="color:var(--ink-soft);"></p>
+            <div th:if="${user.role.name() == 'FREELANCER'}">
+                <h3 style="margin-top:24px;">Reviews</h3>
+                <div th:if="${#lists.isEmpty(reviews)}" class="helper">No reviews yet.</div>
+                <div th:each="review : ${reviews}" class="review-item">
+                    <span class="review-rating" th:text="${review.rating} + ' / 5'"></span>
+                    <p th:if="${review.comment}" th:text="${review.comment}" style="margin:4px 0 0;"></p>
+                    <div style="display:flex; gap:10px; margin-top:6px;" sec:authorize="hasRole('ADMIN')">
+                        <form th:action="@{/reviews/{id}/delete(id=${review.id})}" method="post" class="inline-form">
+                            <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card" style="margin-bottom:16px;">
+                <a class="btn btn-outline" style="width:100%; text-align:center;" th:href="@{/profile/edit}">Edit profile</a>
+            </div>
+            <div class="card" th:if="${user.role.name() == 'FREELANCER'}" sec:authorize="hasRole('CLIENT')">
+                <a class="btn btn-primary" style="width:100%; text-align:center;"
+                   th:href="@{/reviews/create/{id}(id=${user.id})}">Leave a review</a>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

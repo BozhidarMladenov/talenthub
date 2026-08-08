@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <section class="hero">
+        <div class="label" th:text="#{home.hero.tag}">Freelance Job Board</div>
+        <h1 th:text="#{home.hero.title}">Find the right talent.</h1>
+        <p th:text="#{home.hero.subtitle}">TalentHub connects clients with skilled freelancers.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" th:href="@{/jobs}" th:text="#{home.hero.browse}">Browse Jobs</a>
+            <a class="btn btn-ghost-light" th:href="@{/auth/register}" th:text="#{home.hero.start}">Get Started</a>
+        </div>
+    </section>
+    <div class="card-grid" style="margin-bottom:40px;">
+        <div class="card">
+            <h3 th:text="#{home.feature.post.title}">Post a Job</h3>
+            <p class="meta" th:text="#{home.feature.post.desc}">Clients post jobs with a budget and description.</p>
+        </div>
+        <div class="card">
+            <h3 th:text="#{home.feature.review.title}">Review Applicants</h3>
+            <p class="meta" th:text="#{home.feature.review.desc}">Accept or reject applications.</p>
+        </div>
+        <div class="card">
+            <h3 th:text="#{home.feature.track.title}">Track Everything</h3>
+            <p class="meta" th:text="#{home.feature.track.desc}">Freelancers track applications.</p>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

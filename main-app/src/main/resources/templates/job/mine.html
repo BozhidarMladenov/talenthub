@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Jobs')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page">
+    <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <div class="label">Client dashboard</div>
+            <h1>My Job Posts</h1>
+        </div>
+        <a class="btn btn-primary" th:href="@{/jobs/create}" th:text="#{nav.postJob}">Post a Job</a>
+    </div>
+    <div th:if="${#lists.isEmpty(jobs)}" class="empty-state">
+        No job posts yet. <a th:href="@{/jobs/create}">Create your first one</a>.
+    </div>
+    <div class="record-list" th:unless="${#lists.isEmpty(jobs)}">
+        <div class="record" th:each="job : ${jobs}">
+            <div class="record-main">
+                <span class="record-title" th:text="${job.title}">Title</span>
+                <span class="record-sub">$<span th:text="${job.budget}">0</span> &#183; <span th:text="${job.category}">CAT</span></span>
+            </div>
+            <div class="record-actions">
+                <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(job.status)}" th:text="${job.status}">STATUS</span>
+                <a class="btn btn-outline btn-small" th:href="@{/jobs/{id}(id=${job.id})}">View</a>
+                <a class="btn btn-secondary btn-small" th:href="@{/jobs/{id}/edit(id=${job.id})}" th:text="#{job.detail.edit}">Edit</a>
+                <form th:action="@{/jobs/{id}/delete(id=${job.id})}" method="post" class="inline-form">
+                    <button type="submit" class="btn btn-danger btn-small" th:text="#{job.detail.delete}">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

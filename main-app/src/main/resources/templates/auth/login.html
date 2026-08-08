@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Log In')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page-narrow">
+    <div class="page-header">
+        <div class="label" th:text="#{auth.login.label}">Welcome back</div>
+        <h1 th:text="#{auth.login.title}">Log in</h1>
+    </div>
+    <div class="alert alert-success" th:if="${param.registered}" th:text="#{auth.login.registered}">Account created.</div>
+    <div class="alert alert-error"   th:if="${param.error}"      th:text="#{auth.login.error}">Incorrect credentials.</div>
+    <form class="form-card" th:action="@{/auth/login}" method="post">
+        <div class="form-group">
+            <label for="username" th:text="#{auth.login.username}">Username</label>
+            <input type="text" id="username" name="username" autocomplete="username"/>
+        </div>
+        <div class="form-group">
+            <label for="password" th:text="#{auth.login.password}">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password"/>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" th:text="#{auth.login.submit}">Log in</button>
+        </div>
+        <p class="helper">
+            <span th:text="#{auth.login.signup}">New to TalentHub?</span>
+            <a th:href="@{/auth/register}" th:text="#{nav.signup}">Sign up</a>
+        </p>
+    </form>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
