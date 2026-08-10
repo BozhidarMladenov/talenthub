@@ -1,5 +1,6 @@
 package com.softuni.talenthub.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softuni.talenthub.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @Entity
 @Table(name = "users")
 public class User {
@@ -55,7 +57,7 @@ public class User {
     @Column(nullable = false, length = 20)
     private UserRole role;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_permissions",
             joinColumns = @JoinColumn(name = "user_id"),

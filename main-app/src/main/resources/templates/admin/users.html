@@ -8,9 +8,15 @@
         <div class="label" th:text="#{admin.label}">Admin</div>
         <h1 th:text="#{admin.title}">Manage Users</h1>
     </div>
+    <div class="card" style="margin-bottom:24px;" sec:authorize="hasAuthority('PERMISSION_EXPORT_DATA')">
+        <h3>Export Data</h3>
+        <div style="display:flex; gap:12px; margin-top:12px;">
+            <a class="btn btn-outline" th:href="@{/export/jobs/pdf}">Download PDF</a>
+            <a class="btn btn-outline" th:href="@{/export/jobs/excel}">Download Excel</a>
+        </div>
+    </div>
     <div class="record-list">
-        <div class="record" th:each="user : ${users}">
-            <div class="record-main">
+        <div class="record" th:each="user : ${users}">            <div class="record-main">
                 <span class="record-title" th:text="${user.fullName}">Name</span>
                 <span class="record-sub">@<span th:text="${user.username}">username</span> &#183; <span th:text="${user.email}">email</span></span>
                 <span class="record-sub" th:if="${!user.permissions.isEmpty()}">

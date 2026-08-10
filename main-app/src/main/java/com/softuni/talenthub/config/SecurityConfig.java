@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/i18n/**").permitAll()
                         .requestMatchers("/", "/home", "/auth/register", "/auth/login").permitAll()
                         .requestMatchers("/jobs", "/jobs/{id}").permitAll()
+                        .requestMatchers("/export/**").hasAuthority("PERMISSION_EXPORT_DATA")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/jobs/create", "/jobs/*/edit", "/jobs/*/delete",
                                 "/jobs/*/close", "/jobs/*/fill",
