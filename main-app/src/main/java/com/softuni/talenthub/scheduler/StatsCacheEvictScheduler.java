@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class StatsCacheEvictScheduler {
 
     @Scheduled(fixedDelay = 300000)
-    @CacheEvict(value = "allStats", allEntries = true)
+    @CacheEvict(value = {"allStats", "exchangeRates"}, allEntries = true)
     public void evictStatsCache() {
-        log.info("Stats cache evicted — next request will fetch fresh data from stats-svc");
+        log.info("Stats and exchange rate caches evicted — next request will fetch fresh data");
     }
 }

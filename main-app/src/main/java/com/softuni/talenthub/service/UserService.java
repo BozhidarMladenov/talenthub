@@ -62,9 +62,7 @@ public class UserService {
     }
 
     public List<User> findAllNonAdmins() {
-        return userRepository.findAll().stream()
-                .filter(u -> u.getRole() != UserRole.ADMIN)
-                .toList();
+        return userRepository.findAllNonAdminsWithPermissions(UserRole.ADMIN);
     }
 
     public boolean usernameTaken(String username) {

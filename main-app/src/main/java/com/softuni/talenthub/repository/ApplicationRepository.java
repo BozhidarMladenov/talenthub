@@ -18,4 +18,7 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     boolean existsByJobPostAndFreelancer(JobPost jobPost, User freelancer);
 
     Optional<Application> findByJobPostAndFreelancer(JobPost jobPost, User freelancer);
+
+    boolean existsByFreelancerAndJobPost_ClientAndStatus(
+            User freelancer, User client, com.softuni.talenthub.model.enums.ApplicationStatus status);
 }

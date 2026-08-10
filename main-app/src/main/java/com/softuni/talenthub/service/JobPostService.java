@@ -88,9 +88,18 @@ public class JobPostService {
         log.info("Deleting job post {} by client {}", id, currentUser.getUsername());
 
         String category = post.getCategory().name();
+        long remainingInCategory = jobPostRepository.countByCategory(post.getCategory());
+
         applicationRepository.deleteAll(applicationRepository.findAllByJobPost(post));
         jobPostRepository.delete(post);
-        statsClient.deleteStat(category);
+
+        // If this was the last job post in the category, remove the stat row entirely.
+        // Otherwise decrement by 1 so the aggregated totals remain accurate.
+        if (remainingInCategory <= 1) {
+            statsClient.deleteStat(category);
+        } else {
+            statsClient.updateStat(category, new StatRecordRequest(category, -1, 0));
+        }
     }
 
     @Transactional

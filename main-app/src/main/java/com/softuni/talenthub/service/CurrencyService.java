@@ -4,7 +4,9 @@ import com.softuni.talenthub.client.ExchangeRateClient;
 import com.softuni.talenthub.model.dto.ExchangeRateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,6 +31,16 @@ public class CurrencyService {
 
     private final ExchangeRateClient exchangeRateClient;
 
+    /**
+     * Self-reference injected lazily so Spring uses the proxy rather than
+     * 'this' when convertBudget() calls getLatestRates(). Without this,
+     * @Cacheable on getLatestRates() is bypassed by self-invocation and the
+     * external API is called on every single request.
+     */
+    @Lazy
+    @Autowired
+    private CurrencyService self;
+
     @Cacheable("exchangeRates")
     public Map<String, BigDecimal> getLatestRates() {
         log.info("Fetching live exchange rates from open.exchangerate-api.com");
@@ -44,7 +56,9 @@ public class CurrencyService {
     }
 
     public Map<String, String> convertBudget(BigDecimal usdAmount) {
-        Map<String, BigDecimal> rates = getLatestRates();
+        // Call through 'self' (the Spring proxy) so @Cacheable on getLatestRates()
+        // is honoured. Calling getLatestRates() directly via 'this' bypasses the proxy.
+        Map<String, BigDecimal> rates = self.getLatestRates();
         Map<String, String> result = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : DISPLAY_CURRENCIES.entrySet()) {
             String code = entry.getKey();

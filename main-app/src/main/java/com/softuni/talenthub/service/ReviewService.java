@@ -6,7 +6,9 @@ import com.softuni.talenthub.exception.UnauthorizedActionException;
 import com.softuni.talenthub.model.dto.ReviewRequest;
 import com.softuni.talenthub.model.entity.Review;
 import com.softuni.talenthub.model.entity.User;
+import com.softuni.talenthub.model.enums.ApplicationStatus;
 import com.softuni.talenthub.model.enums.UserRole;
+import com.softuni.talenthub.repository.ApplicationRepository;
 import com.softuni.talenthub.repository.ReviewRepository;
 import com.softuni.talenthub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final ApplicationRepository applicationRepository;
 
     public List<Review> findAllForFreelancer(User freelancer) {
         return reviewRepository.findAllByFreelancer(freelancer);
@@ -46,6 +49,11 @@ public class ReviewService {
         }
         if (reviewRepository.existsByFreelancerAndClient(freelancer, client)) {
             throw new InvalidOperationException("You have already reviewed this freelancer.");
+        }
+        if (!applicationRepository.existsByFreelancerAndJobPost_ClientAndStatus(
+                freelancer, client, ApplicationStatus.ACCEPTED)) {
+            throw new InvalidOperationException(
+                    "You can only review a freelancer whose application you have accepted.");
         }
         log.info("Client {} leaving review for freelancer {}", client.getUsername(), freelancer.getUsername());
 

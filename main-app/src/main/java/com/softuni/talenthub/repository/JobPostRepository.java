@@ -19,4 +19,6 @@ public interface JobPostRepository extends JpaRepository<JobPost, UUID> {
     List<JobPost> findAllByStatusAndCategory(JobStatus status, JobCategory category);
 
     List<JobPost> findAllByCreatedAtBefore(LocalDateTime threshold);
+
+    long countByCategory(JobCategory category);
 }
