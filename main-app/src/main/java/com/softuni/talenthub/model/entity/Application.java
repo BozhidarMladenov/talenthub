@@ -1,6 +1,7 @@
 package com.softuni.talenthub.model.entity;
 
 import com.softuni.talenthub.model.enums.ApplicationStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @Entity
 @Table(name = "applications")
 public class Application {

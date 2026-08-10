@@ -1,5 +1,6 @@
 package com.softuni.statssvc.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "job_stats")
 public class JobStat {

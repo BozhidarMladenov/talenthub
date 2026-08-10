@@ -1,5 +1,6 @@
 package com.softuni.talenthub.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @Entity
 @Table(name = "reviews")
 public class Review {
