@@ -17,7 +17,7 @@ public class StatsService {
 
     private final StatsClient statsClient;
 
-    @Cacheable("allStats")
+    @Cacheable(value = "allStats", unless = "#result.isEmpty()")
     public List<StatResponse> getAllStats() {
         log.info("Fetching all stats from stats-svc");
         try {
