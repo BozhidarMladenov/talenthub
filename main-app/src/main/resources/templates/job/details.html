@@ -26,7 +26,8 @@
                 </div>
             </div>
 
-            <div th:unless="${#lists.isEmpty(applications)}" style="margin-top:28px;">
+            <div th:unless="${#lists.isEmpty(applications)}" style="margin-top:28px;"
+                 sec:authorize="isAuthenticated()">
                 <h3 th:text="#{job.detail.applications} + ' (' + ${#lists.size(applications)} + ')'">Applications</h3>
                 <div class="record-list" style="margin-top:12px;">
                     <div class="record" th:each="app : ${applications}">
