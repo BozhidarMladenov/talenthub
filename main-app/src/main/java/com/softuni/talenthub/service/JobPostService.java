@@ -90,7 +90,10 @@ public class JobPostService {
         String category = post.getCategory().name();
         long remainingInCategory = jobPostRepository.countByCategory(post.getCategory());
 
-        applicationRepository.deleteAll(applicationRepository.findAllByJobPost(post));
+        List<com.softuni.talenthub.model.entity.Application> applications =
+                applicationRepository.findAllByJobPost(post);
+        int applicationCount = applications.size();
+        applicationRepository.deleteAll(applications);
         jobPostRepository.delete(post);
 
         // If this was the last job post in the category, remove the stat row entirely.
@@ -98,7 +101,8 @@ public class JobPostService {
         if (remainingInCategory <= 1) {
             statsClient.deleteStat(category);
         } else {
-            statsClient.updateStat(category, new StatRecordRequest(category, -1, 0));
+            statsClient.updateStat(category,
+                    new StatRecordRequest(category, -1, -applicationCount));
         }
     }
 
