@@ -25,10 +25,8 @@ public class JobCleanupScheduler {
     @CacheEvict(value = "openJobs", allEntries = true)
     public void closeStaleJobPosts() {
         LocalDateTime threshold = LocalDateTime.now().minusDays(90);
-        List<JobPost> stale = jobPostRepository.findAllByCreatedAtBefore(threshold)
-                .stream()
-                .filter(j -> j.getStatus() == JobStatus.OPEN)
-                .toList();
+        List<JobPost> stale = jobPostRepository
+                .findAllByCreatedAtBeforeAndStatus(threshold, JobStatus.OPEN);
 
         stale.forEach(j -> j.setStatus(JobStatus.CLOSED));
         jobPostRepository.saveAll(stale);
