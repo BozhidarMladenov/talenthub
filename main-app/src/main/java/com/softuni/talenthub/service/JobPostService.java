@@ -96,8 +96,6 @@ public class JobPostService {
         applicationRepository.deleteAll(applications);
         jobPostRepository.delete(post);
 
-        // If this was the last job post in the category, remove the stat row entirely.
-        // Otherwise decrement by 1 so the aggregated totals remain accurate.
         if (remainingInCategory <= 1) {
             statsClient.deleteStat(category);
         } else {

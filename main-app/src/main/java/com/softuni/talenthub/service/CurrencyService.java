@@ -31,12 +31,7 @@ public class CurrencyService {
 
     private final ExchangeRateClient exchangeRateClient;
 
-    /**
-     * Self-reference injected lazily so Spring uses the proxy rather than
-     * 'this' when convertBudget() calls getLatestRates(). Without this,
-     * @Cacheable on getLatestRates() is bypassed by self-invocation and the
-     * external API is called on every single request.
-     */
+    
     @Lazy
     @Autowired
     private CurrencyService self;
@@ -56,8 +51,6 @@ public class CurrencyService {
     }
 
     public Map<String, String> convertBudget(BigDecimal usdAmount) {
-        // Call through 'self' (the Spring proxy) so @Cacheable on getLatestRates()
-        // is honoured. Calling getLatestRates() directly via 'this' bypasses the proxy.
         Map<String, BigDecimal> rates = self.getLatestRates();
         Map<String, String> result = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : DISPLAY_CURRENCIES.entrySet()) {

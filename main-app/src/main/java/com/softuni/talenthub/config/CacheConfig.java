@@ -23,19 +23,9 @@ public class CacheConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         ObjectMapper objectMapper = new ObjectMapper();
-
-        // Handle java.time types (LocalDateTime, LocalDate, etc.)
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // Hibernate lazy proxies expose a "hibernateLazyInitializer" field that
-        // Jackson cannot serialize. @JsonIgnoreProperties on each entity suppresses
-        // it; this disables FAIL_ON_EMPTY_BEANS as a safety net for any proxy
-        // that is encountered without that annotation.
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
-        // Store @class type metadata so GenericJackson2JsonRedisSerializer
-        // can deserialize back to the correct concrete type
         objectMapper.activateDefaultTyping(
                 LaissezFaireSubTypeValidator.instance,
                 ObjectMapper.DefaultTyping.NON_FINAL,
